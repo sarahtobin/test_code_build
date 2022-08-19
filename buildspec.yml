@@ -11,6 +11,7 @@ phases:
       - echo Preparing database to run tests...
       - RAILS_ENV=test bundle exec rake db:setup
       - echo rbenv version
+      - rbenv install 2.6.3
       - echo rbenv versions
       - RAILS_ENV=test bundle exec rake db:migrate
   build:
