@@ -9,8 +9,9 @@ phases:
   pre_build:
     commands:
       - echo Preparing database to run tests...
-      - cp config/database.yml.example config/database.yml
       - RAILS_ENV=test bundle exec rake db:setup
+      - echo rbenv version
+      - echo rbenv versions
       - RAILS_ENV=test bundle exec rake db:migrate
   build:
     commands:
