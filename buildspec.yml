@@ -1,22 +1,20 @@
 version: 0.2
+
 phases:
   install:
     commands:
-      - echo Logging into Amazon ECR...
-      - $(aws ecr get-login --region $AWS_DEFAULT_REGION --no-include-email)
-      - REPOSITORY_URI=154477107666.dkr.ecr.us-east-1.amazonaws.com/dailydrip/produciton
+      - echo Starting postgresql...
+      - service postgresql restart
+      - echo Installing Bundler...
+      - gem install bundler
+      - bundle install --with test
+  pre_build:
+    commands:
+      - echo Preparing database to run tests...
+      - cp config/database.yml.example config/database.yml
+      - RAILS_ENV=test bundle exec rake db:setup
+      - RAILS_ENV=test bundle exec rake db:migrate
   build:
     commands:
-      - echo Build started on `date`
-      - echo Building the Docker image...
-      - docker build -t $REPOSITORY_URI:latest .
-  post_build:
-    commands:
-      - echo Build completed on `date`
-      - echo Pushing the Docker images...
-      - docker push $REPOSITORY_URI:latest
-      - echo Writing image definitions file...
-      - printf '[{"name":"produciton","imageUri":"%s"}]' $REPOSITORY_URI:latest > imagedefinitions.json
-
-artifacts:
-  files: imagedefinitions.json
+      - echo Running rspec tests...
+      - bundle exec rspec spec/
