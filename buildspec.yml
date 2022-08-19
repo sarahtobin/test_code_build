@@ -3,6 +3,9 @@ version: 0.2
 phases:
   install:
     commands:
+      - echo rbenv version
+      - rbenv install 2.6.3
+      - echo rbenv versions
       - echo Installing Bundler...
       - gem install bundler
       - bundle install --with test
@@ -10,9 +13,6 @@ phases:
     commands:
       - echo Preparing database to run tests...
       - RAILS_ENV=test bundle exec rake db:setup
-      - echo rbenv version
-      - rbenv install 2.6.3
-      - echo rbenv versions
       - RAILS_ENV=test bundle exec rake db:migrate
   build:
     commands:
